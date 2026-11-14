@@ -1,0 +1,2567 @@
+{
+ "format": "megajam-ue-import/1",
+ "unreal_root": "/Game/MegaJam",
+ "import_settings": {
+  "uniform_scale": 1.0,
+  "convert_scene": true,
+  "force_front_x_axis": false,
+  "root_motion": false,
+  "animation_length": "exported_time",
+  "normals": "import_normals",
+  "textures": "embedded in the SK fbx"
+ },
+ "conventions": {
+  "frames": "1-based; loops repeat their first key as the last key (keep it, UE loops seamlessly)",
+  "car_forward": "nose points +Y in mesh space; the car always drives BACKWARDS, so rotate the mesh component Yaw 90 so the tail points along the actor's +X (verify with the arrow)",
+  "car_left_right": "L/R = the direction the car's path bends, seen in the direction of travel",
+  "rider_direction": "_B/_L/_R = where the player is relative to the rider (behind/left/right); for Damage/Death it is where the hit comes from",
+  "rider_scale_on_camel": 1.5,
+  "rider_socket": {
+   "camel_bone": "ORG-Sitting_Root",
+   "note": "bone points up; create a Skeleton Socket on it rotated 90 deg so the rider sits upright facing the camel's head (check with a Preview Asset)",
+   "optional_yaw_deg": {
+    "Camel_Low": -6.7,
+    "Camel_Mid": -4.8,
+    "Camel_High": -1.8
+   }
+  },
+  "car_sockets": [
+   "Driver_Socket",
+   "Passenger_Socket"
+  ],
+  "sync": "CamelStride: all rider Ride* loops and camel Run loops are 18 frames @30fps; Steer: car Drive/Turn* share length, wheel spin and road bumps"
+ },
+ "assets": [
+  {
+   "id": "Car_Final",
+   "kind": "skeletal_mesh",
+   "fbx": "Cars/Car_Final/SK_Car_Final.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final",
+   "asset_name": "SK_Car_Final",
+   "skeleton_of": null,
+   "fps": 24
+  },
+  {
+   "id": "Car_Base",
+   "kind": "skeletal_mesh",
+   "fbx": "Cars/Car_Base/SK_Car_Base.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base",
+   "asset_name": "SK_Car_Base",
+   "skeleton_of": null,
+   "fps": 24
+  },
+  {
+   "id": "Car_High",
+   "kind": "skeletal_mesh",
+   "fbx": "Cars/Car_High/SK_Car_High.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High",
+   "asset_name": "SK_Car_High",
+   "skeleton_of": null,
+   "fps": 24
+  },
+  {
+   "id": "Peasant_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/Peasant_warrior/SK_Peasant_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior",
+   "asset_name": "SK_Peasant_warrior",
+   "skeleton_of": null,
+   "fps": 30
+  },
+  {
+   "id": "Spear_Peasant_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/Peasant_warrior/SK_Spear_Peasant_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior",
+   "asset_name": "SK_Spear_Peasant_warrior",
+   "skeleton_of": "Peasant_warrior",
+   "fps": 30,
+   "note": "second SkeletalMeshComponent with Leader Pose = the warrior mesh; hide when unarmed / after a throw"
+  },
+  {
+   "id": "city_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/city_warrior/SK_city_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior",
+   "asset_name": "SK_city_warrior",
+   "skeleton_of": null,
+   "fps": 30
+  },
+  {
+   "id": "Spear_city_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/city_warrior/SK_Spear_city_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior",
+   "asset_name": "SK_Spear_city_warrior",
+   "skeleton_of": "city_warrior",
+   "fps": 30,
+   "note": "second SkeletalMeshComponent with Leader Pose = the warrior mesh; hide when unarmed / after a throw"
+  },
+  {
+   "id": "female_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/female_warrior/SK_female_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior",
+   "asset_name": "SK_female_warrior",
+   "skeleton_of": null,
+   "fps": 30
+  },
+  {
+   "id": "Spear_female_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/female_warrior/SK_Spear_female_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior",
+   "asset_name": "SK_Spear_female_warrior",
+   "skeleton_of": "female_warrior",
+   "fps": 30,
+   "note": "second SkeletalMeshComponent with Leader Pose = the warrior mesh; hide when unarmed / after a throw"
+  },
+  {
+   "id": "high_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/high_warrior/SK_high_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior",
+   "asset_name": "SK_high_warrior",
+   "skeleton_of": null,
+   "fps": 30
+  },
+  {
+   "id": "Spear_high_warrior",
+   "kind": "skeletal_mesh",
+   "fbx": "Riders/high_warrior/SK_Spear_high_warrior.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior",
+   "asset_name": "SK_Spear_high_warrior",
+   "skeleton_of": "high_warrior",
+   "fps": 30,
+   "note": "second SkeletalMeshComponent with Leader Pose = the warrior mesh; hide when unarmed / after a throw"
+  },
+  {
+   "id": "SM_Spear",
+   "kind": "static_mesh",
+   "fbx": "Riders/Props/SM_Spear.fbx",
+   "dest": "/Game/MegaJam/Riders/Props",
+   "asset_name": "SM_Spear",
+   "note": "thrown projectile; shaft along local Z, origin at the grip"
+  },
+  {
+   "id": "Camel_Low",
+   "kind": "skeletal_mesh",
+   "fbx": "Camels/Camel_Low/SK_Camel_Low.fbx",
+   "dest": "/Game/MegaJam/Camels/Camel_Low",
+   "asset_name": "SK_Camel_Low",
+   "skeleton_of": null,
+   "fps": 30
+  },
+  {
+   "id": "Camel_Mid",
+   "kind": "skeletal_mesh",
+   "fbx": "Camels/Camel_Mid/SK_Camel_Mid.fbx",
+   "dest": "/Game/MegaJam/Camels/Camel_Mid",
+   "asset_name": "SK_Camel_Mid",
+   "skeleton_of": null,
+   "fps": 30
+  },
+  {
+   "id": "Camel_High",
+   "kind": "skeletal_mesh",
+   "fbx": "Camels/Camel_High/SK_Camel_High.fbx",
+   "dest": "/Game/MegaJam/Camels/Camel_High",
+   "asset_name": "SK_Camel_High",
+   "skeleton_of": null,
+   "fps": 30
+  }
+ ],
+ "animations": [
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Boost.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Boost",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Boost",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Brake.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Brake",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Brake",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Damage_Front.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Damage_Front",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Damage_Front",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Damage_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Damage_L",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Damage_L",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Damage_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Damage_R",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Damage_R",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Damage_Rear.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Damage_Rear",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Damage_Rear",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Dead.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Dead",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Dead",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Death_Flip.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Death_Flip",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Death_Flip",
+   "fps": 24,
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "roof_lands": 28
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Drift_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Drift_L",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Drift_L",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Drift_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Drift_R",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Drift_R",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Drive.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Drive",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Drive",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Idle.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Idle",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Idle",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Jump_Air.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Jump_Air",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Jump_Air",
+   "fps": 24,
+   "frames": 25,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Jump_Land.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Jump_Land",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Jump_Land",
+   "fps": 24,
+   "frames": 22,
+   "loop": false,
+   "events": {
+    "touchdown_rear": 2,
+    "touchdown_front": 4
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Jump_Start.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Jump_Start",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Jump_Start",
+   "fps": 24,
+   "frames": 12,
+   "loop": false,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Ram.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Ram",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Ram",
+   "fps": 24,
+   "frames": 32,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Ram_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Ram_L",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Ram_L",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Ram_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Ram_R",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Ram_R",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Turn_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Turn_L",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Turn_L",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Turn_L_Max.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Turn_L_Max",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Turn_L_Max",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Turn_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Turn_R",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Turn_R",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Final/Animations/A_Car_Final_Turn_R_Max.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Final/Animations",
+   "asset_name": "A_Car_Final_Turn_R_Max",
+   "skeleton_of": "Car_Final",
+   "group": "car",
+   "clip": "Car_Turn_R_Max",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Boost.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Boost",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Boost",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Brake.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Brake",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Brake",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Damage_Front.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Damage_Front",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Damage_Front",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Damage_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Damage_L",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Damage_L",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Damage_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Damage_R",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Damage_R",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Damage_Rear.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Damage_Rear",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Damage_Rear",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Dead.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Dead",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Dead",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Death_Flip.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Death_Flip",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Death_Flip",
+   "fps": 24,
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "roof_lands": 28
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Drift_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Drift_L",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Drift_L",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Drift_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Drift_R",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Drift_R",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Drive.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Drive",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Drive",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Idle.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Idle",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Idle",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Jump_Air.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Jump_Air",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Jump_Air",
+   "fps": 24,
+   "frames": 25,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Jump_Land.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Jump_Land",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Jump_Land",
+   "fps": 24,
+   "frames": 22,
+   "loop": false,
+   "events": {
+    "touchdown_rear": 2,
+    "touchdown_front": 4
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Jump_Start.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Jump_Start",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Jump_Start",
+   "fps": 24,
+   "frames": 12,
+   "loop": false,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Ram.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Ram",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Ram",
+   "fps": 24,
+   "frames": 32,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Ram_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Ram_L",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Ram_L",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Ram_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Ram_R",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Ram_R",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Turn_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Turn_L",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Turn_L",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Turn_L_Max.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Turn_L_Max",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Turn_L_Max",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Turn_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Turn_R",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Turn_R",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_Base/Animations/A_Car_Base_Turn_R_Max.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_Base/Animations",
+   "asset_name": "A_Car_Base_Turn_R_Max",
+   "skeleton_of": "Car_Base",
+   "group": "car",
+   "clip": "Car_Turn_R_Max",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Boost.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Boost",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Boost",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Brake.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Brake",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Brake",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Damage_Front.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Damage_Front",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Damage_Front",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Damage_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Damage_L",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Damage_L",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Damage_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Damage_R",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Damage_R",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Damage_Rear.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Damage_Rear",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Damage_Rear",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Dead.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Dead",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Dead",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Death_Flip.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Death_Flip",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Death_Flip",
+   "fps": 24,
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "roof_lands": 28
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Drift_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Drift_L",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Drift_L",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Drift_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Drift_R",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Drift_R",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Drive.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Drive",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Drive",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Idle.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Idle",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Idle",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Jump_Air.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Jump_Air",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Jump_Air",
+   "fps": 24,
+   "frames": 25,
+   "loop": true,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Jump_Land.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Jump_Land",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Jump_Land",
+   "fps": 24,
+   "frames": 22,
+   "loop": false,
+   "events": {
+    "touchdown_rear": 2,
+    "touchdown_front": 4
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Jump_Start.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Jump_Start",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Jump_Start",
+   "fps": 24,
+   "frames": 12,
+   "loop": false,
+   "events": {}
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Ram.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Ram",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Ram",
+   "fps": 24,
+   "frames": 32,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Ram_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Ram_L",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Ram_L",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Ram_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Ram_R",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Ram_R",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "impact": 9
+   }
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Turn_L.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Turn_L",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Turn_L",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Turn_L_Max.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Turn_L_Max",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Turn_L_Max",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Turn_R.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Turn_R",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Turn_R",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Cars/Car_High/Animations/A_Car_High_Turn_R_Max.fbx",
+   "dest": "/Game/MegaJam/Cars/Car_High/Animations",
+   "asset_name": "A_Car_High_Turn_R_Max",
+   "skeleton_of": "Car_High",
+   "group": "car",
+   "clip": "Car_Turn_R_Max",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "sync_group": "Steer"
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Damage_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Damage_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Damage_B",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Damage_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Damage_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Damage_L",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Damage_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Damage_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Damage_R",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Death_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Death_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Death_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Death_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Death_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Death_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Death_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Death_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Death_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Ride",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Ride_Look_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Ride_Look_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Ride",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Ride_Look_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Ride_Look_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Taunt_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Taunt_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Taunt_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Throw_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Throw_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Throw_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Taunt_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Taunt_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Taunt_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Throw_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Throw_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/Peasant_warrior/Animations/A_Peasant_warrior_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Throw_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Damage_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Damage_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Damage_B",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Damage_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Damage_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Damage_L",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Damage_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Damage_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Damage_R",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Death_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Death_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Death_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Death_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Death_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Death_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Death_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Death_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Death_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Ride",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Ride_Look_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Ride_Look_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Ride",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Ride_Look_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Ride_Look_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Taunt_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Taunt_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Taunt_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Throw_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Throw_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Spear_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Throw_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Taunt_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Taunt_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Taunt_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Throw_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Throw_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/city_warrior/Animations/A_city_warrior_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Throw_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Damage_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Damage_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Damage_B",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Damage_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Damage_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Damage_L",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Damage_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Damage_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Damage_R",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Death_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Death_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Death_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Death_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Death_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Death_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Death_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Death_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Death_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Ride",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Ride_Look_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Ride_Look_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Ride",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Ride_Look_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Ride_Look_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Taunt_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Taunt_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Taunt_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Throw_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Throw_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Spear_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Throw_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Taunt_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Taunt_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Taunt_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Throw_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Throw_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/female_warrior/Animations/A_female_warrior_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Throw_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Damage_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Damage_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Damage_B",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Damage_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Damage_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Damage_L",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Damage_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Damage_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Damage_R",
+   "fps": 30,
+   "frames": 30,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "hit": 3
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Death_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Death_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Death_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_behind",
+   "hit_from": "behind",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Death_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Death_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Death_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_left",
+   "hit_from": "left",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Death_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Death_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Death_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "both",
+   "direction": "player_right",
+   "hit_from": "right",
+   "events": {
+    "lands_on_road": 31
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Ride",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Ride_Look_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Ride_Look_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Ride",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "forward",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Ride_Look_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Ride_Look_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_L",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Ride_Look_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Ride_Look_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Ride_Look_R",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Taunt_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Taunt_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Taunt_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Throw_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Throw_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Spear_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Throw_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "spear",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Taunt_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Taunt_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Taunt_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {}
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Throw_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Throw_B",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_behind",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Throw_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Throw_L",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_left",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Riders/high_warrior/Animations/A_high_warrior_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Throw_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Throw_R",
+   "fps": 30,
+   "frames": 36,
+   "loop": false,
+   "set": "unarmed",
+   "direction": "player_right",
+   "events": {
+    "release": 13
+   }
+  },
+  {
+   "fbx": "Camels/Camel_Low/Animations/A_Camel_Low_Run.fbx",
+   "dest": "/Game/MegaJam/Camels/Camel_Low/Animations",
+   "asset_name": "A_Camel_Low_Run",
+   "skeleton_of": "Camel_Low",
+   "group": "camel",
+   "clip": "Run",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Camels/Camel_Mid/Animations/A_Camel_Mid_Run.fbx",
+   "dest": "/Game/MegaJam/Camels/Camel_Mid/Animations",
+   "asset_name": "A_Camel_Mid_Run",
+   "skeleton_of": "Camel_Mid",
+   "group": "camel",
+   "clip": "Run",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "events": {},
+   "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Camels/Camel_High/Animations/A_Camel_High_Run.fbx",
+   "dest": "/Game/MegaJam/Camels/Camel_High/Animations",
+   "asset_name": "A_Camel_High_Run",
+   "skeleton_of": "Camel_High",
+   "group": "camel",
+   "clip": "Run",
+   "fps": 30,
+   "frames": 19,
+   "loop": true,
+   "events": {},
+   "sync_group": "CamelStride"
+  }
+ ]
+}
