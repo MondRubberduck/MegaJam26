@@ -11,13 +11,13 @@ It reads `import_manifest.json` from its own folder. Don't move the FBX files re
 
 ## What it does
 
-1. **Meshes:** imports the 19 skeletal meshes, each creating its own skeleton.
-   - The 4 `SK_Spear_<warrior>` meshes and `SK_BeerCan_Driver` are imported onto their owner's skeleton.
-   - It also imports 2 static meshes, `SM_Spear` and `SM_BeerCan`.
-2. **Animations:** imports 197 animations, each onto its asset's skeleton.
-   - 30 fps for riders, camels, the pharaoh and the guards; 24 fps for cars and the driver. Length set to Exported Time.
+1. **Meshes:** imports the 21 skeletal meshes, each creating its own skeleton.
+   - The 4 `SK_Spear_<warrior>` meshes, `SK_BeerCan_Driver` and `SK_Can_Passenger` are imported onto their owner's skeleton.
+   - It also imports 3 static meshes, `SM_Spear`, `SM_BeerCan` and `SM_Can_Passenger`.
+2. **Animations:** imports 210 animations, each onto its asset's skeleton.
+   - 30 fps for riders, camels, the passenger, the pharaoh and the guards; 24 fps for cars and the driver. Length set to Exported Time.
    - Root motion off.
-   - **Units (new on 15 Nov):** the pharaoh and the guards (and the passenger, when she lands) are **centimetre** FBX files:
+   - **Units (new on 15 Nov):** the passenger, the pharaoh and the guards are **centimetre** FBX files:
      UnitScaleFactor 1, so there is **no factor 100 on the root bone**. Their manifest entries carry `"units": "cm"`.
      Cars, riders, camels and the driver are still the older metre files, unchanged. Import everything at uniform scale 1.0.
 3. **Metadata:** tags every AnimSequence with metadata: `MegaJam.Clip`, `MegaJam.Loop`, `MegaJam.Fps`, `MegaJam.Frames`,
@@ -27,7 +27,7 @@ It reads `import_manifest.json` from its own folder. Don't move the FBX files re
    - Length in seconds = (frames − 1) / fps.
 
 **Safe to re-run:** existing assets are skipped. Set the env var `MEGAJAM_FORCE=1` to re-import, or `MEGAJAM_ONLY=car,rider,camel,driver`
-to limit groups (the new groups are `pharaoh`, `guards` and later `passenger`, e.g. `MEGAJAM_ONLY=pharaoh,guards`). `MEGAJAM_ROOT=/Game/Somewhere` changes the target folder (default `/Game/MegaJam`).
+to limit groups (the new groups are `passenger`, `pharaoh` and `guards`, e.g. `MEGAJAM_ONLY=passenger,pharaoh,guards`). `MEGAJAM_ROOT=/Game/Somewhere` changes the target folder (default `/Game/MegaJam`).
 
 ## Content layout after import
 
@@ -37,6 +37,7 @@ to limit groups (the new groups are `pharaoh`, `guards` and later `passenger`, e
 /Game/MegaJam/Riders/Props/SM_Spear
 /Game/MegaJam/Camels/<Camel_Low|Camel_Mid|Camel_High>/SK_*, Animations/A_<camel>_Run
 /Game/MegaJam/Driver/SK_Driver, SK_BeerCan_Driver, Props/SM_BeerCan, Animations/A_Driver_<clip>
+/Game/MegaJam/Passenger/SK_Passenger, SK_Can_Passenger, Props/SM_Can_Passenger, Animations/A_Passenger_<clip>
 /Game/MegaJam/Pharaoh/SK_Pharaoh, Animations/A_Pharaoh_<clip>
 /Game/MegaJam/Guards/SK_Guard2, SK_Guard1, Animations/A_Guard2_<clip>, A_Guard1_<clip>
 ```
@@ -82,6 +83,18 @@ to limit groups (the new groups are `pharaoh`, `guards` and later `passenger`, e
 - **Sync:** rider `Ride*` loops and camel `Run` loops are all 18 frames @30fps (sync group `CamelStride`). Start
   them together.
 - **Looping:** in every loop the last key repeats the first. Loop on the full length; don't trim.
+- **Passenger** (13 clips, 30 fps, cm; `female_warrior` mesh on its own skeleton, replaces the stand-in on rider clips). The root bone stays at identity in every clip.
+  - **On the camel** (`Captive_Idle`, `Captive_Distress`, `Captive_Beg`, `Captive_Beg_L`, `Captive_Beg_R`, all 55-frame loops = 3 camel strides; and `Jump_Start`):
+    attach to the camel bone `ORG-Sitting_Root` at **relative scale 1.5**, the same socket and yaw as the riders. She lies slung across the camel's back behind the
+    rider, head on screen left. Per-camel Z offset (cm, camel at scale 1): High 0, Mid +1.5, Low −1.5. `_L` / `_R` = she begs toward the player on screen left / right.
+  - **In the car** (`Seat_Idle` 61-frame loop, `Seat_Throw_L`, `Seat_Throw_R`, `Seat_Flinch`, `Seat_Cheer`, and `Jump_Land`): attach to `Car_Final`'s
+    `Passenger_Socket` at **relative scale 0.6**, the same as the driver. She faces the hood and leans out of her window on screen left. Every car one-shot starts
+    and ends on `Seat_Idle` frame 1. Authored in `Car_Final` only; no seat offsets measured for `Car_Base` / `Car_High` yet.
+  - **The jump:** `Jump_Start` on the camel (`cuffs_snap` 20, `leave_camel` 35) → detach and fly her while `Jump_Air` plays (21 f, in place; yaw = the car's yaw;
+    blend her scale from 1.5 × camel scale to 0.6 × car scale) → attach to `Passenger_Socket` and play `Jump_Land` (`in_seat` 11) → `Seat_Idle`. The clips join
+    pose for pose; crossfade 2–3 frames at each switch. Exact flight start and end points: `Passenger/README_Passenger_UE5.md`.
+  - **Throws** (right hand): show `SK_Can_Passenger` (Leader Pose = her mesh) from `can_show` 5 to `release` (`Seat_Throw_L` 15, `Seat_Throw_R` 18), then spawn
+    `SM_Can_Passenger`. `Seat_Throw_L` goes out of her window to screen left, `Seat_Throw_R` over the roof to screen right. `Seat_Flinch`: `hit` 1.
 - **Pharaoh** (7 clips, 30 fps, cm):
   - Give `SK_Pharaoh` the throne actor's location, rotation and the **same scale**: throne and pharaoh are both authored 1:1 at 1 m.
     The root is at the throne pivot; he faces mesh +Y like the mannequin, so turn the actor to face the player.
@@ -100,6 +113,6 @@ to limit groups (the new groups are `pharaoh`, `guards` and later `passenger`, e
   - `Fall_Off` (64 f): blasted off backwards, **4.4 m of travel on the root bone**, ends lying face-down at deck height (`still` from 49); no return to Idle.
 
 Human-readable details: `Cars/README_Cars_UE5.md`, `Riders/README_Riders_UE5.md`, `Driver/README_Driver_UE5.md`,
-`Pharaoh/README_Pharaoh_UE5.md`, `Guards/README_Guards_UE5.md`.
+`Passenger/README_Passenger_UE5.md`, `Pharaoh/README_Pharaoh_UE5.md`, `Guards/README_Guards_UE5.md`.
 **Testing:** all FBX contents were checked by re-importing them in Blender. This script was dry-run against a mock
 `unreal` module, **not yet run in a real UE editor**, so read `import_report.json` warnings on the first run.

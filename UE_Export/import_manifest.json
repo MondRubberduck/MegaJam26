@@ -47,6 +47,13 @@
    "cast": "play Cast then Cast_End; spawn the spell at Cast's spell_peak (its last frame)",
    "deaths": "Death_R flies to screen right, Death_L to screen left; both end mid-fall about 3.6 m below the throne: hide or despawn him there"
   },
+  "passenger": {
+   "on_camel": "Captive_* and Jump_Start: attach to the camel bone ORG-Sitting_Root at relative scale 1.5, same socket and squaring yaw as the riders; she lies slung across the camel's back behind the rider, head on screen left. Per-camel Z offset (cm, camel actor scale 1): High 0, Mid +1.5, Low -1.5",
+   "in_car": "Jump_Land and Seat_*: attach to Car_Final bone Passenger_Socket at relative scale 0.6 (same as the driver), no rotation offset; she faces the hood/camera and leans out of her window on screen left. Authored in Car_Final only",
+   "jump": "Jump_Start on the camel -> detach -> Jump_Air while the game flies her (yaw = car yaw, blend scale from 1.5 x camel scale to 0.6 x car scale) -> attach to Passenger_Socket -> Jump_Land -> Seat_Idle. Exact start/end points in Passenger/README_Passenger_UE5.md; crossfade 2-3 frames at each switch",
+   "root": "the root bone is at identity in every passenger clip; the pelvis carries all placement",
+   "throws": "right hand; show SK_Can_Passenger from can_show to release, then spawn SM_Can_Passenger; Seat_Throw_L goes out of her window to screen left, Seat_Throw_R over the roof to screen right"
+  },
   "guards": {
    "meshes": "Guard2 = royal_guard_2 (main), Guard1 = royal_guard_1 (bonus); same 6 clips; each has its OWN skeleton asset",
    "pivot": "root on the deck between the feet; stands on the chariot deck",
@@ -250,6 +257,36 @@
    "skeleton_of": null,
    "fps": 30,
    "units": "cm"
+  },
+  {
+   "id": "Passenger",
+   "kind": "skeletal_mesh",
+   "fbx": "Passenger/SK_Passenger.fbx",
+   "dest": "/Game/MegaJam/Passenger",
+   "asset_name": "SK_Passenger",
+   "skeleton_of": null,
+   "fps": 30,
+   "units": "cm"
+  },
+  {
+   "id": "Can_Passenger",
+   "kind": "skeletal_mesh",
+   "fbx": "Passenger/SK_Can_Passenger.fbx",
+   "dest": "/Game/MegaJam/Passenger",
+   "asset_name": "SK_Can_Passenger",
+   "skeleton_of": "Passenger",
+   "fps": 30,
+   "units": "cm",
+   "note": "second SkeletalMeshComponent with Leader Pose = the passenger mesh; show it from can_show to release in her throws, then spawn SM_Can_Passenger there"
+  },
+  {
+   "id": "SM_Can_Passenger",
+   "kind": "static_mesh",
+   "fbx": "Passenger/SM_Can_Passenger.fbx",
+   "dest": "/Game/MegaJam/Passenger/Props",
+   "asset_name": "SM_Can_Passenger",
+   "units": "cm",
+   "note": "thrown can (4.8 x 4.8 x 9 cm, origin at its centre); same green can as the driver's"
   }
  ],
  "animations": [
@@ -3232,6 +3269,225 @@
    },
    "role": "death",
    "root_travel": true
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Captive_Idle.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Captive_Idle",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Captive_Idle",
+   "fps": 30,
+   "units": "cm",
+   "frames": 55,
+   "loop": true,
+   "events": {},
+   "role": "captive_idle",
+   "placement": "camel",
+   "note": "54-frame loop = 3 camel strides; start in phase with the camel's Run"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Captive_Distress.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Captive_Distress",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Captive_Distress",
+   "fps": 30,
+   "units": "cm",
+   "frames": 55,
+   "loop": true,
+   "events": {},
+   "role": "captive_distress",
+   "placement": "camel"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Captive_Beg.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Captive_Beg",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Captive_Beg",
+   "fps": 30,
+   "units": "cm",
+   "frames": 55,
+   "loop": true,
+   "events": {},
+   "role": "captive_beg",
+   "placement": "camel",
+   "direction": "player_behind"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Captive_Beg_L.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Captive_Beg_L",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Captive_Beg_L",
+   "fps": 30,
+   "units": "cm",
+   "frames": 55,
+   "loop": true,
+   "events": {},
+   "role": "captive_beg",
+   "placement": "camel",
+   "direction": "player_left"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Captive_Beg_R.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Captive_Beg_R",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Captive_Beg_R",
+   "fps": 30,
+   "units": "cm",
+   "frames": 55,
+   "loop": true,
+   "events": {},
+   "role": "captive_beg",
+   "placement": "camel",
+   "direction": "player_right"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Jump_Start.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Jump_Start",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Jump_Start",
+   "fps": 30,
+   "units": "cm",
+   "frames": 37,
+   "loop": false,
+   "events": {
+    "cuffs_snap": 20,
+    "leave_camel": 35
+   },
+   "role": "jump",
+   "placement": "camel",
+   "then_play": "Jump_Air"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Jump_Air.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Jump_Air",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Jump_Air",
+   "fps": 30,
+   "units": "cm",
+   "frames": 21,
+   "loop": false,
+   "events": {},
+   "role": "jump",
+   "placement": "free_flight",
+   "then_play": "Jump_Land"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Jump_Land.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Jump_Land",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Jump_Land",
+   "fps": 30,
+   "units": "cm",
+   "frames": 34,
+   "loop": false,
+   "events": {
+    "in_seat": 11
+   },
+   "role": "jump",
+   "placement": "car",
+   "then_play": "Seat_Idle"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Seat_Idle.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Seat_Idle",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Seat_Idle",
+   "fps": 30,
+   "units": "cm",
+   "frames": 61,
+   "loop": true,
+   "events": {},
+   "role": "idle",
+   "placement": "car"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Seat_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Seat_Throw_L",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Seat_Throw_L",
+   "fps": 30,
+   "units": "cm",
+   "frames": 36,
+   "loop": false,
+   "events": {
+    "can_show": 5,
+    "release": 15
+   },
+   "role": "attack",
+   "placement": "car",
+   "direction": "screen_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Seat_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Seat_Throw_R",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Seat_Throw_R",
+   "fps": 30,
+   "units": "cm",
+   "frames": 44,
+   "loop": false,
+   "events": {
+    "can_show": 5,
+    "release": 18
+   },
+   "role": "attack",
+   "placement": "car",
+   "direction": "over_roof_to_screen_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Seat_Flinch.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Seat_Flinch",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Seat_Flinch",
+   "fps": 30,
+   "units": "cm",
+   "frames": 28,
+   "loop": false,
+   "events": {
+    "hit": 1
+   },
+   "role": "hit",
+   "placement": "car"
+  },
+  {
+   "fbx": "Passenger/Animations/A_Passenger_Seat_Cheer.fbx",
+   "dest": "/Game/MegaJam/Passenger/Animations",
+   "asset_name": "A_Passenger_Seat_Cheer",
+   "skeleton_of": "Passenger",
+   "group": "passenger",
+   "clip": "Seat_Cheer",
+   "fps": 30,
+   "units": "cm",
+   "frames": 36,
+   "loop": false,
+   "events": {},
+   "role": "taunt",
+   "placement": "car"
   }
  ]
 }
