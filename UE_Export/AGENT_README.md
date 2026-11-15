@@ -14,7 +14,10 @@ It reads `import_manifest.json` from its own folder. Don't move the FBX files re
 1. **Meshes:** imports the 23 skeletal meshes, each creating its own skeleton.
    - The 4 `SK_Spear_<warrior>` meshes, `SK_BeerCan_Driver`, `SK_Can_Passenger` and the guards' `SK_Wood_Guard2` / `SK_Wood_Guard1` are imported onto their owner's skeleton.
    - It also imports 4 static meshes, `SM_Spear`, `SM_BeerCan`, `SM_Can_Passenger` and `SM_Wood`.
-2. **Animations:** imports 210 animations, each onto its asset's skeleton.
+2. **Animations:** imports 274 animations, each onto its asset's skeleton.
+   - New on 15 Nov: 52 cart-crew clips (`A_<warrior>_Cart_*`, group `rider`, onto the riders' skeletons) and 12 leaping-guard clips
+     (`A_Guard2_Leap_*` / `A_Guard1_Leap_*`, group `guards`, onto the guards' skeletons). They need no new meshes.
+     Already imported the rest? Run again with `MEGAJAM_ONLY=rider,guards`: existing assets are skipped and only the new clips come in.
    - 30 fps for riders, camels, the passenger, the pharaoh and the guards; 24 fps for cars and the driver. Length set to Exported Time.
    - Root motion off.
    - **Units (new on 15 Nov):** the passenger, the pharaoh and the guards are **centimetre** FBX files:
@@ -33,13 +36,13 @@ to limit groups (the new groups are `passenger`, `pharaoh` and `guards`, e.g. `M
 
 ```
 /Game/MegaJam/Cars/<Car_Final|Car_Base|Car_High>/SK_*, Animations/A_<car>_<clip>
-/Game/MegaJam/Riders/<warrior>/SK_<warrior>, SK_Spear_<warrior>, Animations/A_<warrior>_<clip>
+/Game/MegaJam/Riders/<warrior>/SK_<warrior>, SK_Spear_<warrior>, Animations/A_<warrior>_<clip> (camel riders) and A_<warrior>_Cart_* / A_<warrior>_Spear_Cart_* (cart crew)
 /Game/MegaJam/Riders/Props/SM_Spear
 /Game/MegaJam/Camels/<Camel_Low|Camel_Mid|Camel_High>/SK_*, Animations/A_<camel>_Run
 /Game/MegaJam/Driver/SK_Driver, SK_BeerCan_Driver, Props/SM_BeerCan, Animations/A_Driver_<clip>
 /Game/MegaJam/Passenger/SK_Passenger, SK_Can_Passenger, Props/SM_Can_Passenger, Animations/A_Passenger_<clip>
 /Game/MegaJam/Pharaoh/SK_Pharaoh, Animations/A_Pharaoh_<clip>
-/Game/MegaJam/Guards/SK_Guard2, SK_Guard1, SK_Wood_Guard2, SK_Wood_Guard1, Props/SM_Wood, Animations/A_Guard2_<clip>, A_Guard1_<clip>
+/Game/MegaJam/Guards/SK_Guard2, SK_Guard1, SK_Wood_Guard2, SK_Wood_Guard1, Props/SM_Wood, Animations/A_Guard2_<clip>, A_Guard1_<clip> (incl. the leaping guard's A_<Guard>_Leap_*)
 ```
 
 ## Facts you need for setup (all also in `import_manifest.json` → `conventions`)
@@ -115,8 +118,25 @@ to limit groups (the new groups are `passenger`, `pharaoh` and `guards`, e.g. `M
       launch velocity and spin are in the guards README (multiply the velocity by the actor scale). Also `stomp` 57; blend out from about frame 70.
   - `Taunt_Roar`: `stomp` 9, `loudest_pose` 16. `Taunt_Beat`: `hits` 14/34/46, `deck_smash` 62. `Hit`: `impact` 1.
   - `Fall_Off` (64 f): blasted off backwards, **4.4 m of travel on the root bone**, ends lying face-down at deck height (`still` from 49); no return to Idle.
+- **Cart crew** (stage 3 rider chariots; the four rider warriors standing in the chariot): 13 clips per warrior, 30 fps, the riders' **metre** format,
+  imported onto the existing rider skeletons into `Riders/<warrior>/Animations`. Manifest entries carry `"context": "cart_crew"`.
+  - The `root` bone is the standing spot on the deck: chariot-local (21, 2, 29.4) cm in UE axes before the chariot's actor scale. Turn him so his mesh +Y points
+    along the chariot's travel (toward the shafts). Chariot = 2.2 × the warrior's scale `[to confirm]`. For `Peasant_warrior` and `high_warrior` the root is 24 cm in front
+    of the mesh origin: place the root, not the actor origin.
+  - Base pose `Cart_Ride` f1 (37-frame loop; `Spear_Cart_Ride` for the spear set). Every one-shot except `Cart_Fall_Off` starts and ends on it.
+  - `Cart_Taunt_B/L/R` (54 f, `loudest` 13), `Cart_Throw_B/L/R` (40 f; rock on `hand_r` from `rock_show` 3, `release` 13; no rock mesh exported),
+    `Spear_Cart_Throw_B/L/R` (46 f; `release` 13: hide `SK_Spear_<warrior>`, spawn `SM_Spear`; show the SK spear again at `spear_show` 23 for `_B`, 36 for `_L`/`_R`),
+    `Cart_Hit` (28 f, hit from behind), `Cart_Fall_Off` (64 f, **root travel** about 3 m back toward the player and 0.647 m down to the road; detach KeepWorld at f1–f4).
+  - `_B` / `_L` / `_R` = player behind / on screen left / on screen right, as for the camel riders.
+- **Leaping guard** (`A_Guard2_Leap_*`, bonus `A_Guard1_Leap_*`; 6 clips each, 30 fps, cm, onto the guards' skeletons; `"context": "leaping_guard"`):
+  - `Leap_Crouch_In` (21 f, starts on the guard `Idle` f1, turns him 180° to face the car) → `Leap_Crouch` (37-frame loop) → optional `Leap_Bellow` (40 f) → `Leap_Jump` (34 f)
+    → `Leap_Land_Car` (hit the roof) or `Leap_Land_Road` (missed), 50 f each, both with **root travel**.
+  - **The game flies him** from `takeoff` f11 to `contact` f34: a parabola in car space with g = 0.907 cm/frame² at 1:1 (multiply by his world scale) to a contact point
+    on the car roof. Formula and contact point: `Leaping_Guard/README_Leaping_Guard_UE5.md`. On a miss hold `Leap_Jump` f34, continue the arc to the road, then `Leap_Land_Road`.
+  - `Leap_Land_Car` plays attached to the car until `hits_road` (f25), then detach KeepWorld. Proposed scale: guard = 0.8 × the car actor `[to confirm]`.
 
 Human-readable details: `Cars/README_Cars_UE5.md`, `Riders/README_Riders_UE5.md`, `Driver/README_Driver_UE5.md`,
-`Passenger/README_Passenger_UE5.md`, `Pharaoh/README_Pharaoh_UE5.md`, `Guards/README_Guards_UE5.md`.
+`Passenger/README_Passenger_UE5.md`, `Pharaoh/README_Pharaoh_UE5.md`, `Guards/README_Guards_UE5.md`, `Crew/README_Crew_UE5.md`,
+`Leaping_Guard/README_Leaping_Guard_UE5.md`.
 **Testing:** all FBX contents were checked by re-importing them in Blender. This script was dry-run against a mock
 `unreal` module, **not yet run in a real UE editor**, so read `import_report.json` warnings on the first run.

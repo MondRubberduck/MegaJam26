@@ -60,6 +60,19 @@
    "scale": "proposed: the pharaoh/throne actor scale x1.25 so they tower over the seated pharaoh [to confirm with Nils]",
    "throw": "two-handed overhead heave of a big log (SM_Wood). Montage start: show SM_Wood on the deck (deck transform in Guards/README_Guards_UE5.md). grab f9: hide it, show SK_Wood_<Guard> (Leader Pose). release f58: hide SK_Wood_<Guard>, spawn SM_Wood at GetSocketTransform('Wood', RTS_World) of the hand_r socket 'Wood' (add it per skeleton, values in the guards README); it leaves rising toward the player, launch velocity in the README times the actor scale",
    "fall_off": "travels 4.4 m back on the root and ends lying face-down at deck height; no return to Idle"
+  },
+  "cart_crew": {
+   "what": "anims with context cart_crew: the four rider warriors standing in the rider chariot (stage 3), on the riders' skeletons and in the riders' metre format, 30 fps",
+   "placement": "root = standing spot on the deck, (21, 2, 29.4) cm in the chariot mesh's local UE space before its actor scale; mesh +Y along the chariot's travel (toward the shafts); chariot = 2.2 x warrior scale [to confirm]",
+   "base_pose": "Cart_Ride f1 (Spear_ clips: Spear_Cart_Ride f1); every one-shot except Cart_Fall_Off starts and ends on it",
+   "props": "rock (not exported) on hand_r from rock_show to release; spear: hide SK_Spear_<warrior> at release and spawn SM_Spear, show it again at spear_show",
+   "fall_off": "root travel ~3 m back toward the player and 0.647 m down to the road (at chariot 2.2x); detach KeepWorld at f1-f4"
+  },
+  "leaping_guard": {
+   "what": "anims with context leaping_guard: Guard2/Guard1 dive off a rider chariot at the player's car (Leap_Crouch_In -> Leap_Crouch loop [-> Leap_Bellow] -> Leap_Jump -> Leap_Land_Car or Leap_Land_Road)",
+   "arc": "frames 11-34 of Leap_Jump: the game moves the actor on a parabola (g 0.907 cm/frame^2 at 1:1, in car space) to the roof contact point; numbers in Leaping_Guard/README_Leaping_Guard_UE5.md",
+   "land": "Leap_Land_Car plays attached to the car until hits_road (f25), then detach KeepWorld; Leap_Land_Road plays in road space; on a miss hold Leap_Jump f34 and continue the arc to the road",
+   "scale": "proposed guard = 0.8 x car actor, chariot = 2.2 x guard [to confirm]"
   }
  },
  "assets": [
@@ -3537,6 +3550,1394 @@
    "events": {},
    "role": "taunt",
    "placement": "car"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Ride",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "unarmed"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Cart_Ride",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "spear"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Hit.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Hit",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Hit",
+   "fps": 30,
+   "frames": 28,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "on_rail": 8,
+    "look_back": 13,
+    "fist_shake": [
+     14,
+     19
+    ]
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "hit_from": "behind"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Fall_Off.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Fall_Off",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Fall_Off",
+   "fps": 30,
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "leaves_deck": 4,
+    "over_back_edge": 8,
+    "lands_on_road": 17,
+    "still_from": 56
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "root_travel": true
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Taunt_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Throw_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_B",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Cart_Throw_B",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_B",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 23
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Taunt_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Throw_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_L",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Cart_Throw_L",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_L",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Taunt_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Cart_Throw_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_R",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/Peasant_warrior/Animations/A_Peasant_warrior_Spear_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/Peasant_warrior/Animations",
+   "asset_name": "A_Peasant_warrior_Spear_Cart_Throw_R",
+   "skeleton_of": "Peasant_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_R",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Ride",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "unarmed"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Spear_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Cart_Ride",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "spear"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Hit.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Hit",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Hit",
+   "fps": 30,
+   "frames": 28,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "on_rail": 8,
+    "look_back": 13,
+    "fist_shake": [
+     14,
+     19
+    ]
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "hit_from": "behind"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Fall_Off.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Fall_Off",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Fall_Off",
+   "fps": 30,
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "leaves_deck": 4,
+    "over_back_edge": 8,
+    "lands_on_road": 17,
+    "still_from": 56
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "root_travel": true
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Taunt_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Throw_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_B",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Spear_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Cart_Throw_B",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_B",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 23
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Taunt_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Throw_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_L",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Spear_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Cart_Throw_L",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_L",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Taunt_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Cart_Throw_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_R",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/city_warrior/Animations/A_city_warrior_Spear_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/city_warrior/Animations",
+   "asset_name": "A_city_warrior_Spear_Cart_Throw_R",
+   "skeleton_of": "city_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_R",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Ride",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "unarmed"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Spear_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Cart_Ride",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "spear"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Hit.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Hit",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Hit",
+   "fps": 30,
+   "frames": 28,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "on_rail": 8,
+    "look_back": 13,
+    "fist_shake": [
+     14,
+     19
+    ]
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "hit_from": "behind"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Fall_Off.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Fall_Off",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Fall_Off",
+   "fps": 30,
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "leaves_deck": 4,
+    "over_back_edge": 8,
+    "lands_on_road": 17,
+    "still_from": 56
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "root_travel": true
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Taunt_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Throw_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_B",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Spear_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Cart_Throw_B",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_B",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 23
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Taunt_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Throw_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_L",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Spear_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Cart_Throw_L",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_L",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Taunt_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Cart_Throw_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_R",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/female_warrior/Animations/A_female_warrior_Spear_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/female_warrior/Animations",
+   "asset_name": "A_female_warrior_Spear_Cart_Throw_R",
+   "skeleton_of": "female_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_R",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Ride",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "unarmed"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Spear_Cart_Ride.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Cart_Ride",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Ride",
+   "fps": 30,
+   "frames": 37,
+   "loop": true,
+   "events": {},
+   "context": "cart_crew",
+   "set": "spear"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Hit.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Hit",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Hit",
+   "fps": 30,
+   "frames": 28,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "on_rail": 8,
+    "look_back": 13,
+    "fist_shake": [
+     14,
+     19
+    ]
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "hit_from": "behind"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Fall_Off.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Fall_Off",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Fall_Off",
+   "fps": 30,
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "leaves_deck": 4,
+    "over_back_edge": 8,
+    "lands_on_road": 17,
+    "still_from": 56
+   },
+   "context": "cart_crew",
+   "set": "both",
+   "root_travel": true
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Taunt_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_B",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Throw_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_B",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Spear_Cart_Throw_B.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Cart_Throw_B",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_B",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 23
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_behind",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Taunt_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Taunt_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_L",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Throw_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_L",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Spear_Cart_Throw_L.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Cart_Throw_L",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_L",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_left",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Taunt_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Taunt_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Taunt_R",
+   "fps": 30,
+   "frames": 54,
+   "loop": false,
+   "events": {
+    "hop_off": 4,
+    "land": 10,
+    "loudest": 13,
+    "pound": [
+     24,
+     28
+    ],
+    "hop_back": 35,
+    "land_back": 43
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Cart_Throw_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Cart_Throw_R",
+   "fps": 30,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "rock_show": 3,
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "hop_back": 26,
+    "land_back": 34
+   },
+   "context": "cart_crew",
+   "set": "unarmed",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Crew/high_warrior/Animations/A_high_warrior_Spear_Cart_Throw_R.fbx",
+   "dest": "/Game/MegaJam/Riders/high_warrior/Animations",
+   "asset_name": "A_high_warrior_Spear_Cart_Throw_R",
+   "skeleton_of": "high_warrior",
+   "group": "rider",
+   "clip": "Spear_Cart_Throw_R",
+   "fps": 30,
+   "frames": 46,
+   "loop": false,
+   "events": {
+    "hop": 2,
+    "land": 9,
+    "release": 13,
+    "spear_hide": 13,
+    "hop_back": 28,
+    "land_back": 36,
+    "spear_show": 36
+   },
+   "context": "cart_crew",
+   "set": "spear",
+   "direction": "player_right",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard2_Leap_Crouch_In.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Leap_Crouch_In",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Leap_Crouch_In",
+   "fps": 30,
+   "units": "cm",
+   "frames": 21,
+   "loop": false,
+   "events": {
+    "feet_leave": 6,
+    "feet_land": 12
+   },
+   "context": "leaping_guard"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard2_Leap_Crouch.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Leap_Crouch",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Leap_Crouch",
+   "fps": 30,
+   "units": "cm",
+   "frames": 37,
+   "loop": true,
+   "events": {
+    "fist_pound": 8,
+    "snort": 16,
+    "feint": 24,
+    "paw_scrape": 32
+   },
+   "context": "leaping_guard"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard2_Leap_Bellow.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Leap_Bellow",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Leap_Bellow",
+   "fps": 30,
+   "units": "cm",
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "roar_start": 10,
+    "roar_peak": 13,
+    "pump": 19,
+    "roar_end": 24
+   },
+   "context": "leaping_guard",
+   "optional": true
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard2_Leap_Jump.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Leap_Jump",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Leap_Jump",
+   "fps": 30,
+   "units": "cm",
+   "frames": 34,
+   "loop": false,
+   "events": {
+    "takeoff": 11,
+    "dive_peak": 22,
+    "contact": 34
+   },
+   "context": "leaping_guard",
+   "game_arc": "frames 11-34, see the Leaping_Guard README"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard2_Leap_Land_Car.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Leap_Land_Car",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Leap_Land_Car",
+   "fps": 30,
+   "units": "cm",
+   "frames": 50,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "squash": 3,
+    "leaves_roof": 6,
+    "clear_of_car": 10,
+    "hits_road": 25,
+    "still": 45
+   },
+   "context": "leaping_guard",
+   "root_travel": true,
+   "space": "car until hits_road, then road"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard2_Leap_Land_Road.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Leap_Land_Road",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Leap_Land_Road",
+   "fps": 30,
+   "units": "cm",
+   "frames": 50,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "squash": 3,
+    "still": 44
+   },
+   "context": "leaping_guard",
+   "root_travel": true,
+   "space": "road"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard1_Leap_Crouch_In.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Leap_Crouch_In",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Leap_Crouch_In",
+   "fps": 30,
+   "units": "cm",
+   "frames": 21,
+   "loop": false,
+   "events": {
+    "feet_leave": 6,
+    "feet_land": 12
+   },
+   "context": "leaping_guard"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard1_Leap_Crouch.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Leap_Crouch",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Leap_Crouch",
+   "fps": 30,
+   "units": "cm",
+   "frames": 37,
+   "loop": true,
+   "events": {
+    "fist_pound": 8,
+    "snort": 16,
+    "feint": 24,
+    "paw_scrape": 32
+   },
+   "context": "leaping_guard"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard1_Leap_Bellow.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Leap_Bellow",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Leap_Bellow",
+   "fps": 30,
+   "units": "cm",
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "roar_start": 10,
+    "roar_peak": 13,
+    "pump": 19,
+    "roar_end": 24
+   },
+   "context": "leaping_guard",
+   "optional": true
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard1_Leap_Jump.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Leap_Jump",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Leap_Jump",
+   "fps": 30,
+   "units": "cm",
+   "frames": 34,
+   "loop": false,
+   "events": {
+    "takeoff": 11,
+    "dive_peak": 22,
+    "contact": 34
+   },
+   "context": "leaping_guard",
+   "game_arc": "frames 11-34, see the Leaping_Guard README"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard1_Leap_Land_Car.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Leap_Land_Car",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Leap_Land_Car",
+   "fps": 30,
+   "units": "cm",
+   "frames": 50,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "squash": 3,
+    "leaves_roof": 7,
+    "clear_of_car": 8,
+    "hits_road": 25,
+    "still": 45
+   },
+   "context": "leaping_guard",
+   "root_travel": true,
+   "space": "car until hits_road, then road"
+  },
+  {
+   "fbx": "Leaping_Guard/Animations/A_Guard1_Leap_Land_Road.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Leap_Land_Road",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Leap_Land_Road",
+   "fps": 30,
+   "units": "cm",
+   "frames": 50,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "squash": 3,
+    "still": 44
+   },
+   "context": "leaping_guard",
+   "root_travel": true,
+   "space": "road"
   }
  ]
 }
