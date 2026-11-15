@@ -58,7 +58,7 @@
    "meshes": "Guard2 = royal_guard_2 (main), Guard1 = royal_guard_1 (bonus); same 6 clips; each has its OWN skeleton asset",
    "pivot": "root on the deck between the feet; stands on the chariot deck",
    "scale": "proposed: the pharaoh/throne actor scale x1.25 so they tower over the seated pharaoh [to confirm with Nils]",
-   "throw": "grabs a projectile off the deck with both hands (grab), releases it from hand_r (release); the game spawns the projectile (a rock unless Nils says otherwise [to confirm])",
+   "throw": "two-handed overhead heave of a big log (SM_Wood). Montage start: show SM_Wood on the deck (deck transform in Guards/README_Guards_UE5.md). grab f9: hide it, show SK_Wood_<Guard> (Leader Pose). release f58: hide SK_Wood_<Guard>, spawn SM_Wood at GetSocketTransform('Wood', RTS_World) of the hand_r socket 'Wood' (add it per skeleton, values in the guards README); it leaves rising toward the player, launch velocity in the README times the actor scale",
    "fall_off": "travels 4.4 m back on the root and ends lying face-down at deck height; no return to Idle"
   }
  },
@@ -249,6 +249,17 @@
    "units": "cm"
   },
   {
+   "id": "Wood_Guard2",
+   "kind": "skeletal_mesh",
+   "fbx": "Guards/SK_Wood_Guard2.fbx",
+   "dest": "/Game/MegaJam/Guards",
+   "asset_name": "SK_Wood_Guard2",
+   "skeleton_of": "Guard2",
+   "fps": 30,
+   "units": "cm",
+   "note": "the log in Guard2's right hand: second SkeletalMeshComponent with Leader Pose = the guard mesh and Use Bounds From Leader Pose Component = true; show it at the Throw's grab, hide it at release and spawn SM_Wood at the hand_r socket 'Wood' (Guards/README_Guards_UE5.md)"
+  },
+  {
    "id": "Guard1",
    "kind": "skeletal_mesh",
    "fbx": "Guards/SK_Guard1.fbx",
@@ -257,6 +268,26 @@
    "skeleton_of": null,
    "fps": 30,
    "units": "cm"
+  },
+  {
+   "id": "Wood_Guard1",
+   "kind": "skeletal_mesh",
+   "fbx": "Guards/SK_Wood_Guard1.fbx",
+   "dest": "/Game/MegaJam/Guards",
+   "asset_name": "SK_Wood_Guard1",
+   "skeleton_of": "Guard1",
+   "fps": 30,
+   "units": "cm",
+   "note": "the log in Guard1's right hand: second SkeletalMeshComponent with Leader Pose = the guard mesh and Use Bounds From Leader Pose Component = true; show it at the Throw's grab, hide it at release and spawn SM_Wood at the hand_r socket 'Wood' (Guards/README_Guards_UE5.md)"
+  },
+  {
+   "id": "SM_Wood",
+   "kind": "static_mesh",
+   "fbx": "Guards/Props/SM_Wood.fbx",
+   "dest": "/Game/MegaJam/Guards/Props",
+   "asset_name": "SM_Wood",
+   "units": "cm",
+   "note": "the guards' log (114 x 17.5 x 17 cm, origin at the grip centre, long axis = local X): deck log before the grab and the thrown projectile"
   },
   {
    "id": "Passenger",
@@ -3117,14 +3148,23 @@
    "clip": "Throw",
    "fps": 30,
    "units": "cm",
-   "frames": 64,
+   "frames": 78,
    "loop": false,
    "events": {
-    "grab": 12,
-    "release": 38
+    "grab": 9,
+    "stomp": 57,
+    "release": 58,
+    "blend_out_from": 70
    },
    "role": "attack",
-   "release_bone": "hand_r"
+   "release_bone": "hand_r",
+   "prop": "SK_Wood_<Guard>",
+   "projectile": "SM_Wood",
+   "projectile_socket": {
+    "bone": "hand_r",
+    "name": "Wood"
+   },
+   "deck_prop": "SM_Wood"
   },
   {
    "fbx": "Guards/Animations/A_Guard2_Hit.fbx",
@@ -3224,14 +3264,23 @@
    "clip": "Throw",
    "fps": 30,
    "units": "cm",
-   "frames": 64,
+   "frames": 78,
    "loop": false,
    "events": {
-    "grab": 12,
-    "release": 38
+    "grab": 9,
+    "stomp": 57,
+    "release": 58,
+    "blend_out_from": 70
    },
    "role": "attack",
-   "release_bone": "hand_r"
+   "release_bone": "hand_r",
+   "prop": "SK_Wood_<Guard>",
+   "projectile": "SM_Wood",
+   "projectile_socket": {
+    "bone": "hand_r",
+    "name": "Wood"
+   },
+   "deck_prop": "SM_Wood"
   },
   {
    "fbx": "Guards/Animations/A_Guard1_Hit.fbx",

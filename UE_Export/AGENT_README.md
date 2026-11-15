@@ -11,9 +11,9 @@ It reads `import_manifest.json` from its own folder. Don't move the FBX files re
 
 ## What it does
 
-1. **Meshes:** imports the 21 skeletal meshes, each creating its own skeleton.
-   - The 4 `SK_Spear_<warrior>` meshes, `SK_BeerCan_Driver` and `SK_Can_Passenger` are imported onto their owner's skeleton.
-   - It also imports 3 static meshes, `SM_Spear`, `SM_BeerCan` and `SM_Can_Passenger`.
+1. **Meshes:** imports the 23 skeletal meshes, each creating its own skeleton.
+   - The 4 `SK_Spear_<warrior>` meshes, `SK_BeerCan_Driver`, `SK_Can_Passenger` and the guards' `SK_Wood_Guard2` / `SK_Wood_Guard1` are imported onto their owner's skeleton.
+   - It also imports 4 static meshes, `SM_Spear`, `SM_BeerCan`, `SM_Can_Passenger` and `SM_Wood`.
 2. **Animations:** imports 210 animations, each onto its asset's skeleton.
    - 30 fps for riders, camels, the passenger, the pharaoh and the guards; 24 fps for cars and the driver. Length set to Exported Time.
    - Root motion off.
@@ -39,7 +39,7 @@ to limit groups (the new groups are `passenger`, `pharaoh` and `guards`, e.g. `M
 /Game/MegaJam/Driver/SK_Driver, SK_BeerCan_Driver, Props/SM_BeerCan, Animations/A_Driver_<clip>
 /Game/MegaJam/Passenger/SK_Passenger, SK_Can_Passenger, Props/SM_Can_Passenger, Animations/A_Passenger_<clip>
 /Game/MegaJam/Pharaoh/SK_Pharaoh, Animations/A_Pharaoh_<clip>
-/Game/MegaJam/Guards/SK_Guard2, SK_Guard1, Animations/A_Guard2_<clip>, A_Guard1_<clip>
+/Game/MegaJam/Guards/SK_Guard2, SK_Guard1, SK_Wood_Guard2, SK_Wood_Guard1, Props/SM_Wood, Animations/A_Guard2_<clip>, A_Guard1_<clip>
 ```
 
 ## Facts you need for setup (all also in `import_manifest.json` → `conventions`)
@@ -107,8 +107,12 @@ to limit groups (the new groups are `passenger`, `pharaoh` and `guards`, e.g. `M
   - Root on the chariot deck between the feet; face the player. Proposed scale: the pharaoh/throne actor scale ×1.25, so they tower over
     the seated pharaoh (`Guards/Guards_lineup.png`). That scale is still to be confirmed by Nils.
   - `Idle` 61-frame loop = base pose; `Taunt_Roar`, `Taunt_Beat`, `Throw` and `Hit` start and end on its frame 1.
-  - `Throw`: `grab` 12 (both hands at the deck), `release` 38 from `hand_r`, over the right shoulder. The game spawns the projectile
-    (a rock unless Nils decides otherwise).
+  - `Throw` (**new on 15 Nov, 78 f**; already imported? re-import with `MEGAJAM_ONLY=guards MEGAJAM_FORCE=1`): a two-handed overhead heave of a **big log**.
+    - Per guard: `SK_Wood_<Guard>` as a second Skeletal Mesh Component with **Leader Pose = the guard mesh** and **Use Bounds From Leader Pose Component = true**, hidden by default.
+      Add a skeleton socket **`Wood` on `hand_r`** (exact values per guard in `Guards/README_Guards_UE5.md`, "Throw: the log").
+    - Montage start: show an `SM_Wood` on the deck (deck transform in the guards README). `grab` 9: hide it and show `SK_Wood_<Guard>`.
+    - `release` 58: hide `SK_Wood_<Guard>` and spawn `SM_Wood` at `GetSocketTransform("Wood", RTS_World)`, read when the notify fires. It leaves rising toward the player;
+      launch velocity and spin are in the guards README (multiply the velocity by the actor scale). Also `stomp` 57; blend out from about frame 70.
   - `Taunt_Roar`: `stomp` 9, `loudest_pose` 16. `Taunt_Beat`: `hits` 14/34/46, `deck_smash` 62. `Hit`: `impact` 1.
   - `Fall_Off` (64 f): blasted off backwards, **4.4 m of travel on the root bone**, ends lying face-down at deck height (`still` from 49); no return to Idle.
 
