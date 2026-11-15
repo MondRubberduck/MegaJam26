@@ -11,12 +11,15 @@ It reads `import_manifest.json` from its own folder. Don't move the FBX files re
 
 ## What it does
 
-1. **Meshes:** imports the 16 skeletal meshes, each creating its own skeleton.
+1. **Meshes:** imports the 19 skeletal meshes, each creating its own skeleton.
    - The 4 `SK_Spear_<warrior>` meshes and `SK_BeerCan_Driver` are imported onto their owner's skeleton.
    - It also imports 2 static meshes, `SM_Spear` and `SM_BeerCan`.
-2. **Animations:** imports 178 animations, each onto its asset's skeleton.
-   - 30 fps for riders and camels, 24 fps for cars and the driver; length set to Exported Time.
+2. **Animations:** imports 197 animations, each onto its asset's skeleton.
+   - 30 fps for riders, camels, the pharaoh and the guards; 24 fps for cars and the driver. Length set to Exported Time.
    - Root motion off.
+   - **Units (new on 15 Nov):** the pharaoh and the guards (and the passenger, when she lands) are **centimetre** FBX files:
+     UnitScaleFactor 1, so there is **no factor 100 on the root bone**. Their manifest entries carry `"units": "cm"`.
+     Cars, riders, camels and the driver are still the older metre files, unchanged. Import everything at uniform scale 1.0.
 3. **Metadata:** tags every AnimSequence with metadata: `MegaJam.Clip`, `MegaJam.Loop`, `MegaJam.Fps`, `MegaJam.Frames`,
    `MegaJam.Events` (JSON, 1-based frames), `MegaJam.SyncGroup`, `MegaJam.Direction`, `MegaJam.Set`.
 4. **Report:** writes `import_report.json` next to the script. Check `summary.errors == 0`.
@@ -24,7 +27,7 @@ It reads `import_manifest.json` from its own folder. Don't move the FBX files re
    - Length in seconds = (frames − 1) / fps.
 
 **Safe to re-run:** existing assets are skipped. Set the env var `MEGAJAM_FORCE=1` to re-import, or `MEGAJAM_ONLY=car,rider,camel,driver`
-to limit groups. `MEGAJAM_ROOT=/Game/Somewhere` changes the target folder (default `/Game/MegaJam`).
+to limit groups (the new groups are `pharaoh`, `guards` and later `passenger`, e.g. `MEGAJAM_ONLY=pharaoh,guards`). `MEGAJAM_ROOT=/Game/Somewhere` changes the target folder (default `/Game/MegaJam`).
 
 ## Content layout after import
 
@@ -34,6 +37,8 @@ to limit groups. `MEGAJAM_ROOT=/Game/Somewhere` changes the target folder (defau
 /Game/MegaJam/Riders/Props/SM_Spear
 /Game/MegaJam/Camels/<Camel_Low|Camel_Mid|Camel_High>/SK_*, Animations/A_<camel>_Run
 /Game/MegaJam/Driver/SK_Driver, SK_BeerCan_Driver, Props/SM_BeerCan, Animations/A_Driver_<clip>
+/Game/MegaJam/Pharaoh/SK_Pharaoh, Animations/A_Pharaoh_<clip>
+/Game/MegaJam/Guards/SK_Guard2, SK_Guard1, Animations/A_Guard2_<clip>, A_Guard1_<clip>
 ```
 
 ## Facts you need for setup (all also in `import_manifest.json` → `conventions`)
@@ -77,7 +82,24 @@ to limit groups. `MEGAJAM_ROOT=/Game/Somewhere` changes the target folder (defau
 - **Sync:** rider `Ride*` loops and camel `Run` loops are all 18 frames @30fps (sync group `CamelStride`). Start
   them together.
 - **Looping:** in every loop the last key repeats the first. Loop on the full length; don't trim.
+- **Pharaoh** (7 clips, 30 fps, cm):
+  - Give `SK_Pharaoh` the throne actor's location, rotation and the **same scale**: throne and pharaoh are both authored 1:1 at 1 m.
+    The root is at the throne pivot; he faces mesh +Y like the mannequin, so turn the actor to face the player.
+  - Base pose = `Sit_Idle` frame 1 (151-frame loop). Every one-shot starts on it; `Cast_End`, `Taunt_Flex` and `Flinch` also end on it.
+  - `Cast` (32 f) then `Cast_End` (16 f): spawn the spell at `spell_peak` = frame 32, the last frame of `Cast`.
+  - `Flinch` (44 f) doubles as his hit reaction. `Taunt_Flex` (114 f): he stands up, flexes and sits back down.
+  - `Death_R` / `Death_L` (61 f): he is blasted off and cartwheels to screen right / screen left. The flight is **on the root bone**:
+    keep root motion off, raise the mesh's Bounds Scale so he is not culled, and hide or despawn him at the end (he is still falling, about 3.6 m below the throne).
+- **Guards** (`Guard2` = royal_guard_2, the main one; `Guard1` = royal_guard_1, a bonus): 6 clips each, 30 fps, cm, **each mesh has its own skeleton**.
+  - Root on the chariot deck between the feet; face the player. Proposed scale: the pharaoh/throne actor scale ×1.25, so they tower over
+    the seated pharaoh (`Guards/Guards_lineup.png`). That scale is still to be confirmed by Nils.
+  - `Idle` 61-frame loop = base pose; `Taunt_Roar`, `Taunt_Beat`, `Throw` and `Hit` start and end on its frame 1.
+  - `Throw`: `grab` 12 (both hands at the deck), `release` 38 from `hand_r`, over the right shoulder. The game spawns the projectile
+    (a rock unless Nils decides otherwise).
+  - `Taunt_Roar`: `stomp` 9, `loudest_pose` 16. `Taunt_Beat`: `hits` 14/34/46, `deck_smash` 62. `Hit`: `impact` 1.
+  - `Fall_Off` (64 f): blasted off backwards, **4.4 m of travel on the root bone**, ends lying face-down at deck height (`still` from 49); no return to Idle.
 
-Human-readable details: `Cars/README_Cars_UE5.md`, `Riders/README_Riders_UE5.md`, `Driver/README_Driver_UE5.md`.
+Human-readable details: `Cars/README_Cars_UE5.md`, `Riders/README_Riders_UE5.md`, `Driver/README_Driver_UE5.md`,
+`Pharaoh/README_Pharaoh_UE5.md`, `Guards/README_Guards_UE5.md`.
 **Testing:** all FBX contents were checked by re-importing them in Blender. This script was dry-run against a mock
 `unreal` module, **not yet run in a real UE editor**, so read `import_report.json` warnings on the first run.

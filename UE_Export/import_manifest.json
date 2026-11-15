@@ -37,7 +37,23 @@
    "throws": "left hand; show SK_BeerCan_Driver from the can_show event (frame 4) to the release event, then spawn SM_BeerCan there with the velocity the game wants",
    "sync": "Idle_*/Drive_* are 48 frames @24fps like the car's Car_Idle/Car_Drive loops (sync group CarLoop)"
   },
-  "sync_groups": "CamelStride: all rider Ride* loops and camel Run loops are 18 frames @30fps; Steer: car Drive/Turn* share length, wheel spin and road bumps"
+  "sync_groups": "CamelStride: all rider Ride* loops and camel Run loops are 18 frames @30fps; Steer: car Drive/Turn* share length, wheel spin and road bumps",
+  "units": "entries with \"units\": \"cm\" (Passenger, Pharaoh, Guards, from 15 Nov) are centimetre FBX: UnitScaleFactor 1, NO factor 100 on the root bone, import at uniform scale 1.0 like the rest. Entries without it (cars, riders, camels, driver) are the older metre files with the factor 100 on the root, unchanged.",
+  "root_travel": "clips with \"root_travel\": true carry their flight/fall on the root bone (pharaoh Death_R/L, guards Fall_Off). Keep Enable Root Motion OFF so the travel plays visually; give the mesh a large Bounds Scale (or a physics asset) so it is not culled while far from the actor. Every other new clip keeps the root still.",
+  "pharaoh": {
+   "attach_to": "the throne actor (Pharao_Throne): same location, rotation and SAME scale (throne and pharaoh are both authored 1:1 at 1 m)",
+   "faces": "Blender -Y = UE mesh +Y like the mannequin; turn the actor to face the player",
+   "base_pose": "Sit_Idle frame 1; every one-shot starts on it and Cast_End/Taunt_Flex/Flinch end on it",
+   "cast": "play Cast then Cast_End; spawn the spell at Cast's spell_peak (its last frame)",
+   "deaths": "Death_R flies to screen right, Death_L to screen left; both end mid-fall about 3.6 m below the throne: hide or despawn him there"
+  },
+  "guards": {
+   "meshes": "Guard2 = royal_guard_2 (main), Guard1 = royal_guard_1 (bonus); same 6 clips; each has its OWN skeleton asset",
+   "pivot": "root on the deck between the feet; stands on the chariot deck",
+   "scale": "proposed: the pharaoh/throne actor scale x1.25 so they tower over the seated pharaoh [to confirm with Nils]",
+   "throw": "grabs a projectile off the deck with both hands (grab), releases it from hand_r (release); the game spawns the projectile (a rock unless Nils says otherwise [to confirm])",
+   "fall_off": "travels 4.4 m back on the root and ends lying face-down at deck height; no return to Idle"
+  }
  },
  "assets": [
   {
@@ -204,6 +220,36 @@
    "dest": "/Game/MegaJam/Driver/Props",
    "asset_name": "SM_BeerCan",
    "note": "thrown projectile; can axis along local Z, origin at the grip"
+  },
+  {
+   "id": "Pharaoh",
+   "kind": "skeletal_mesh",
+   "fbx": "Pharaoh/SK_Pharaoh.fbx",
+   "dest": "/Game/MegaJam/Pharaoh",
+   "asset_name": "SK_Pharaoh",
+   "skeleton_of": null,
+   "fps": 30,
+   "units": "cm"
+  },
+  {
+   "id": "Guard2",
+   "kind": "skeletal_mesh",
+   "fbx": "Guards/SK_Guard2.fbx",
+   "dest": "/Game/MegaJam/Guards",
+   "asset_name": "SK_Guard2",
+   "skeleton_of": null,
+   "fps": 30,
+   "units": "cm"
+  },
+  {
+   "id": "Guard1",
+   "kind": "skeletal_mesh",
+   "fbx": "Guards/SK_Guard1.fbx",
+   "dest": "/Game/MegaJam/Guards",
+   "asset_name": "SK_Guard1",
+   "skeleton_of": null,
+   "fps": 30,
+   "units": "cm"
   }
  ],
  "animations": [
@@ -2833,6 +2879,359 @@
    "variant": "B",
    "plays_with_car": "Car_Drive",
    "direction": "screen_right"
+  },
+  {
+   "fbx": "Pharaoh/Animations/A_Pharaoh_Sit_Idle.fbx",
+   "dest": "/Game/MegaJam/Pharaoh/Animations",
+   "asset_name": "A_Pharaoh_Sit_Idle",
+   "skeleton_of": "Pharaoh",
+   "group": "pharaoh",
+   "clip": "Sit_Idle",
+   "fps": 30,
+   "units": "cm",
+   "frames": 151,
+   "loop": true,
+   "events": {
+    "hmph": 53,
+    "finger_taps": [
+     99,
+     105,
+     111,
+     119
+    ]
+   },
+   "role": "idle",
+   "seated": true
+  },
+  {
+   "fbx": "Pharaoh/Animations/A_Pharaoh_Cast.fbx",
+   "dest": "/Game/MegaJam/Pharaoh/Animations",
+   "asset_name": "A_Pharaoh_Cast",
+   "skeleton_of": "Pharaoh",
+   "group": "pharaoh",
+   "clip": "Cast",
+   "fps": 30,
+   "units": "cm",
+   "frames": 32,
+   "loop": false,
+   "events": {
+    "spell_peak": 32
+   },
+   "role": "attack",
+   "seated": true,
+   "then_play": "Cast_End"
+  },
+  {
+   "fbx": "Pharaoh/Animations/A_Pharaoh_Cast_End.fbx",
+   "dest": "/Game/MegaJam/Pharaoh/Animations",
+   "asset_name": "A_Pharaoh_Cast_End",
+   "skeleton_of": "Pharaoh",
+   "group": "pharaoh",
+   "clip": "Cast_End",
+   "fps": 30,
+   "units": "cm",
+   "frames": 16,
+   "loop": false,
+   "events": {
+    "hand_on_armrest": 11,
+    "fist_on_chin": 14
+   },
+   "role": "attack_return",
+   "seated": true
+  },
+  {
+   "fbx": "Pharaoh/Animations/A_Pharaoh_Taunt_Flex.fbx",
+   "dest": "/Game/MegaJam/Pharaoh/Animations",
+   "asset_name": "A_Pharaoh_Taunt_Flex",
+   "skeleton_of": "Pharaoh",
+   "group": "pharaoh",
+   "clip": "Taunt_Flex",
+   "fps": 30,
+   "units": "cm",
+   "frames": 114,
+   "loop": false,
+   "events": {
+    "standing": 19,
+    "double_biceps": [
+     34,
+     49
+    ],
+    "most_muscular": [
+     70,
+     87
+    ],
+    "seated_again": 114
+   },
+   "role": "taunt"
+  },
+  {
+   "fbx": "Pharaoh/Animations/A_Pharaoh_Flinch.fbx",
+   "dest": "/Game/MegaJam/Pharaoh/Animations",
+   "asset_name": "A_Pharaoh_Flinch",
+   "skeleton_of": "Pharaoh",
+   "group": "pharaoh",
+   "clip": "Flinch",
+   "fps": 30,
+   "units": "cm",
+   "frames": 44,
+   "loop": false,
+   "events": {
+    "recoil_peak": 5
+   },
+   "role": "hit",
+   "seated": true
+  },
+  {
+   "fbx": "Pharaoh/Animations/A_Pharaoh_Death_R.fbx",
+   "dest": "/Game/MegaJam/Pharaoh/Animations",
+   "asset_name": "A_Pharaoh_Death_R",
+   "skeleton_of": "Pharaoh",
+   "group": "pharaoh",
+   "clip": "Death_R",
+   "fps": 30,
+   "units": "cm",
+   "frames": 61,
+   "loop": false,
+   "events": {
+    "blast": 1,
+    "apex": 23
+   },
+   "role": "death",
+   "direction": "screen_right",
+   "root_travel": true
+  },
+  {
+   "fbx": "Pharaoh/Animations/A_Pharaoh_Death_L.fbx",
+   "dest": "/Game/MegaJam/Pharaoh/Animations",
+   "asset_name": "A_Pharaoh_Death_L",
+   "skeleton_of": "Pharaoh",
+   "group": "pharaoh",
+   "clip": "Death_L",
+   "fps": 30,
+   "units": "cm",
+   "frames": 61,
+   "loop": false,
+   "events": {
+    "blast": 1,
+    "apex": 23
+   },
+   "role": "death",
+   "direction": "screen_left",
+   "root_travel": true
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard2_Idle.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Idle",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Idle",
+   "fps": 30,
+   "units": "cm",
+   "frames": 61,
+   "loop": true,
+   "events": {},
+   "role": "idle"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard2_Taunt_Roar.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Taunt_Roar",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Taunt_Roar",
+   "fps": 30,
+   "units": "cm",
+   "frames": 62,
+   "loop": false,
+   "events": {
+    "stomp": 9,
+    "loudest_pose": 16
+   },
+   "role": "taunt"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard2_Taunt_Beat.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Taunt_Beat",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Taunt_Beat",
+   "fps": 30,
+   "units": "cm",
+   "frames": 92,
+   "loop": false,
+   "events": {
+    "hits": [
+     14,
+     34,
+     46
+    ],
+    "deck_smash": 62
+   },
+   "role": "taunt"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard2_Throw.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Throw",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Throw",
+   "fps": 30,
+   "units": "cm",
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "grab": 12,
+    "release": 38
+   },
+   "role": "attack",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard2_Hit.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Hit",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Hit",
+   "fps": 30,
+   "units": "cm",
+   "frames": 26,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "recoil_peak": 3
+   },
+   "role": "hit"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard2_Fall_Off.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard2_Fall_Off",
+   "skeleton_of": "Guard2",
+   "group": "guards",
+   "clip": "Fall_Off",
+   "fps": 30,
+   "units": "cm",
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "blast": 1,
+    "leaves_deck": 4,
+    "lands": 16,
+    "still": 49
+   },
+   "role": "death",
+   "root_travel": true
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard1_Idle.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Idle",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Idle",
+   "fps": 30,
+   "units": "cm",
+   "frames": 61,
+   "loop": true,
+   "events": {},
+   "role": "idle"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard1_Taunt_Roar.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Taunt_Roar",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Taunt_Roar",
+   "fps": 30,
+   "units": "cm",
+   "frames": 62,
+   "loop": false,
+   "events": {
+    "stomp": 9,
+    "loudest_pose": 16
+   },
+   "role": "taunt"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard1_Taunt_Beat.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Taunt_Beat",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Taunt_Beat",
+   "fps": 30,
+   "units": "cm",
+   "frames": 92,
+   "loop": false,
+   "events": {
+    "hits": [
+     14,
+     34,
+     46
+    ],
+    "deck_smash": 62
+   },
+   "role": "taunt"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard1_Throw.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Throw",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Throw",
+   "fps": 30,
+   "units": "cm",
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "grab": 12,
+    "release": 38
+   },
+   "role": "attack",
+   "release_bone": "hand_r"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard1_Hit.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Hit",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Hit",
+   "fps": 30,
+   "units": "cm",
+   "frames": 26,
+   "loop": false,
+   "events": {
+    "impact": 1,
+    "recoil_peak": 3
+   },
+   "role": "hit"
+  },
+  {
+   "fbx": "Guards/Animations/A_Guard1_Fall_Off.fbx",
+   "dest": "/Game/MegaJam/Guards/Animations",
+   "asset_name": "A_Guard1_Fall_Off",
+   "skeleton_of": "Guard1",
+   "group": "guards",
+   "clip": "Fall_Off",
+   "fps": 30,
+   "units": "cm",
+   "frames": 64,
+   "loop": false,
+   "events": {
+    "blast": 1,
+    "leaves_deck": 4,
+    "lands": 16,
+    "still": 49
+   },
+   "role": "death",
+   "root_travel": true
   }
  ]
 }

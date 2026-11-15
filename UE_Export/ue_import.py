@@ -8,7 +8,7 @@ Run inside Unreal Editor 5.x with the "Python Editor Script Plugin" enabled:
 
 Optional environment variables (set before launching the editor/commandlet):
   MEGAJAM_ROOT   content folder to import into (default from the manifest: /Game/MegaJam)
-  MEGAJAM_ONLY   comma list of groups to import: car,rider,camel   (meshes of those groups + their animations)
+  MEGAJAM_ONLY   comma list of groups to import: car,rider,camel,driver,passenger,pharaoh,guards (meshes of those groups + their animations)
   MEGAJAM_FORCE  "1" = re-import assets that already exist (default: skip existing, so re-running is safe)
 
 Order: skeletal meshes (each creates its skeleton) -> meshes that share a skeleton (spears) -> static meshes -> animations.
@@ -33,8 +33,7 @@ report = {"root": ROOT_OVERRIDE or MAN["unreal_root"], "assets": {}, "animations
 def log(msg): unreal.log("[MegaJam] " + msg)
 def dest_of(path): return path.replace(MAN["unreal_root"], ROOT_OVERRIDE, 1) if ROOT_OVERRIDE else path
 def group_of_asset(a):
-    if a["kind"] == "static_mesh" or a["dest"].split("/")[3:4] == ["Riders"]: return "rider"
-    return {"Cars": "car", "Camels": "camel"}.get(a["dest"].split("/")[3], "other")
+    return {"Cars": "car", "Camels": "camel", "Riders": "rider", "Driver": "driver", "Passenger": "passenger", "Pharaoh": "pharaoh", "Guards": "guards"}.get(a["dest"].split("/")[3], "other")
 def wanted(group): return not ONLY or group in ONLY
 
 
