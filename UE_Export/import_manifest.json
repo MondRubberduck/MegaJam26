@@ -29,7 +29,15 @@
    "Driver_Socket",
    "Passenger_Socket"
   ],
-  "sync": "CamelStride: all rider Ride* loops and camel Run loops are 18 frames @30fps; Steer: car Drive/Turn* share length, wheel spin and road bumps"
+  "driver": {
+   "attach_to": "Car_Final bone Driver_Socket",
+   "relative_scale": 0.6,
+   "note": "socket bone has identity rest axes in Blender; verify with a Preview Asset that the driver faces the bonnet (he leans out of the window in every clip), rotate the socket if needed; every one-shot starts and ends on frame 1 of Drive_A",
+   "screen_right": "the driver's window side (+X of the car = screen right in the game camera at the car's nose)",
+   "throws": "left hand; show SK_BeerCan_Driver from the can_show event (frame 4) to the release event, then spawn SM_BeerCan there with the velocity the game wants",
+   "sync": "Idle_*/Drive_* are 48 frames @24fps like the car's Car_Idle/Car_Drive loops (sync group CarLoop)"
+  },
+  "sync_groups": "CamelStride: all rider Ride* loops and camel Run loops are 18 frames @30fps; Steer: car Drive/Turn* share length, wheel spin and road bumps"
  },
  "assets": [
   {
@@ -169,6 +177,33 @@
    "asset_name": "SK_Camel_High",
    "skeleton_of": null,
    "fps": 30
+  },
+  {
+   "id": "Driver",
+   "kind": "skeletal_mesh",
+   "fbx": "Driver/SK_Driver.fbx",
+   "dest": "/Game/MegaJam/Driver",
+   "asset_name": "SK_Driver",
+   "skeleton_of": null,
+   "fps": 24
+  },
+  {
+   "id": "BeerCan_Driver",
+   "kind": "skeletal_mesh",
+   "fbx": "Driver/SK_BeerCan_Driver.fbx",
+   "dest": "/Game/MegaJam/Driver",
+   "asset_name": "SK_BeerCan_Driver",
+   "skeleton_of": "Driver",
+   "fps": 24,
+   "note": "second SkeletalMeshComponent with Leader Pose = the driver mesh; show only during throws (hide at release)"
+  },
+  {
+   "id": "SM_BeerCan",
+   "kind": "static_mesh",
+   "fbx": "Driver/Props/SM_BeerCan.fbx",
+   "dest": "/Game/MegaJam/Driver/Props",
+   "asset_name": "SM_BeerCan",
+   "note": "thrown projectile; can axis along local Z, origin at the grip"
   }
  ],
  "animations": [
@@ -2562,6 +2597,242 @@
    "loop": true,
    "events": {},
    "sync_group": "CamelStride"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Damage_A.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Damage_A",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Damage_A",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2,
+    "lands": 12,
+    "head_clonk": 16
+   },
+   "variant": "A",
+   "plays_with_car": "Car_Damage_L / Car_Damage_R",
+   "direction": "side_hit"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Damage_B.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Damage_B",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Damage_B",
+   "fps": 24,
+   "frames": 30,
+   "loop": false,
+   "events": {
+    "hit": 2,
+    "lands": 11
+   },
+   "variant": "B",
+   "plays_with_car": "Car_Damage_Front / Car_Damage_Rear",
+   "direction": "front_or_rear_hit"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Drive_A.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Drive_A",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Drive_A",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {
+    "door_slap": [
+     27,
+     32
+    ]
+   },
+   "variant": "A",
+   "plays_with_car": "Car_Drive",
+   "sync_group": "CarLoop"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Drive_B.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Drive_B",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Drive_B",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "variant": "B",
+   "plays_with_car": "Car_Drive",
+   "sync_group": "CarLoop"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Idle_A.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Idle_A",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Idle_A",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "variant": "A",
+   "plays_with_car": "Car_Idle",
+   "sync_group": "CarLoop"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Idle_B.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Idle_B",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Idle_B",
+   "fps": 24,
+   "frames": 49,
+   "loop": true,
+   "events": {},
+   "variant": "B",
+   "plays_with_car": "Car_Idle",
+   "sync_group": "CarLoop"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Taunt_A.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Taunt_A",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Taunt_A",
+   "fps": 24,
+   "frames": 48,
+   "loop": false,
+   "events": {
+    "door_bang": [
+     30,
+     36
+    ]
+   },
+   "variant": "A",
+   "plays_with_car": "Car_Drive",
+   "direction": "screen_right"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Taunt_B.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Taunt_B",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Taunt_B",
+   "fps": 24,
+   "frames": 48,
+   "loop": false,
+   "events": {},
+   "variant": "B",
+   "plays_with_car": "Car_Drive",
+   "direction": "into_screen"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Taunt_C.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Taunt_C",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Taunt_C",
+   "fps": 24,
+   "frames": 48,
+   "loop": false,
+   "events": {
+    "door_bang": [
+     8,
+     16,
+     24,
+     32,
+     40
+    ]
+   },
+   "variant": "C",
+   "plays_with_car": "Car_Drive"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Throw_Roof_A.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Throw_Roof_A",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Throw_Roof_A",
+   "fps": 24,
+   "frames": 36,
+   "loop": false,
+   "events": {
+    "can_show": 4,
+    "release": 15,
+    "roof_slap": 22
+   },
+   "variant": "A",
+   "plays_with_car": "Car_Drive",
+   "direction": "over_roof_to_screen_left"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Throw_Roof_B.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Throw_Roof_B",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Throw_Roof_B",
+   "fps": 24,
+   "frames": 40,
+   "loop": false,
+   "events": {
+    "can_show": 4,
+    "release": 17,
+    "roof_slap": [
+     26,
+     32
+    ]
+   },
+   "variant": "B",
+   "plays_with_car": "Car_Drive",
+   "direction": "over_roof_to_screen_left"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Throw_Window_A.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Throw_Window_A",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Throw_Window_A",
+   "fps": 24,
+   "frames": 32,
+   "loop": false,
+   "events": {
+    "can_show": 4,
+    "release": 12
+   },
+   "variant": "A",
+   "plays_with_car": "Car_Drive",
+   "direction": "screen_right"
+  },
+  {
+   "fbx": "Driver/Animations/A_Driver_Throw_Window_B.fbx",
+   "dest": "/Game/MegaJam/Driver/Animations",
+   "asset_name": "A_Driver_Throw_Window_B",
+   "skeleton_of": "Driver",
+   "group": "driver",
+   "clip": "Throw_Window_B",
+   "fps": 24,
+   "frames": 36,
+   "loop": false,
+   "events": {
+    "can_show": 4,
+    "release": 14
+   },
+   "variant": "B",
+   "plays_with_car": "Car_Drive",
+   "direction": "screen_right"
   }
  ]
 }
