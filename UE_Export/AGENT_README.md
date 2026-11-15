@@ -90,8 +90,9 @@ to limit groups (the new groups are `passenger`, `pharaoh` and `guards`, e.g. `M
   - **On the camel** (`Captive_Idle`, `Captive_Distress`, `Captive_Beg`, `Captive_Beg_L`, `Captive_Beg_R`, all 55-frame loops = 3 camel strides; and `Jump_Start`):
     attach to the camel bone `ORG-Sitting_Root` at **relative scale 1.5**, the same socket and yaw as the riders. She lies slung across the camel's back behind the
     rider, head on screen left. Per-camel Z offset (cm, camel at scale 1): High 0, Mid +1.5, Low −1.5. `_L` / `_R` = she begs toward the player on screen left / right.
-  - **In the car** (`Seat_Idle` 61-frame loop, `Seat_Throw_L`, `Seat_Throw_R`, `Seat_Flinch`, `Seat_Cheer`, and `Jump_Land`): attach to `Car_Final`'s
-    `Passenger_Socket` at **relative scale 0.6**, the same as the driver. She faces the hood and leans out of her window on screen left. Every car one-shot starts
+  - **In the car** (`Seat_Idle` 61-frame loop, `Seat_Throw_L`, `Seat_Throw_R`, `Seat_Flinch`, `Seat_Cheer`, and `Jump_Land`; **rebuilt on 15 Nov evening**, re-import
+    the passenger with `MEGAJAM_ONLY=passenger MEGAJAM_FORCE=1`): attach to `Car_Final`'s `Passenger_Socket` with SnapToTarget at **relative scale 0.6**, the same as
+    the driver, then set her world rotation to the car mesh component's rotation once (details in the passenger README). She faces the hood and leans out of her window on screen left. Every car one-shot starts
     and ends on `Seat_Idle` frame 1. Authored in `Car_Final` only; no seat offsets measured for `Car_Base` / `Car_High` yet.
   - **The jump:** `Jump_Start` on the camel (`cuffs_snap` 20, `leave_camel` 35) → detach and fly her while `Jump_Air` plays (21 f, in place; yaw = the car's yaw;
     blend her scale from 1.5 × camel scale to 0.6 × car scale) → attach to `Passenger_Socket` and play `Jump_Land` (`in_seat` 11) → `Seat_Idle`. The clips join

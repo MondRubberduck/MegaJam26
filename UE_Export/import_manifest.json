@@ -49,7 +49,7 @@
   },
   "passenger": {
    "on_camel": "Captive_* and Jump_Start: attach to the camel bone ORG-Sitting_Root at relative scale 1.5, same socket and squaring yaw as the riders; she lies slung across the camel's back behind the rider, head on screen left. Per-camel Z offset (cm, camel actor scale 1): High 0, Mid +1.5, Low -1.5",
-   "in_car": "Jump_Land and Seat_*: attach to Car_Final bone Passenger_Socket at relative scale 0.6 (same as the driver), no rotation offset; she faces the hood/camera and leans out of her window on screen left. Authored in Car_Final only",
+   "in_car": "Jump_Land and Seat_*: attach to Car_Final bone Passenger_Socket with SnapToTarget at relative scale 0.6 (same as the driver), then SetWorldRotation(car mesh component rotation) once (see Passenger/README_Passenger_UE5.md); she faces the hood/camera and leans out of her window on screen left. Authored in Car_Final only",
    "jump": "Jump_Start on the camel -> detach -> Jump_Air while the game flies her (yaw = car yaw, blend scale from 1.5 x camel scale to 0.6 x car scale) -> attach to Passenger_Socket -> Jump_Land -> Seat_Idle. Exact start/end points in Passenger/README_Passenger_UE5.md; crossfade 2-3 frames at each switch",
    "root": "the root bone is at identity in every passenger clip; the pelvis carries all placement",
    "throws": "right hand; show SK_Can_Passenger from can_show to release, then spawn SM_Can_Passenger; Seat_Throw_L goes out of her window to screen left, Seat_Throw_R over the roof to screen right"
